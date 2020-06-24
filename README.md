@@ -4,10 +4,11 @@
 2020 AIoT 物聯網課程期末小專題
 
 
+
 ----
 ## 使用方式
 
-<h3>註: 需要預載xampp</h3>
+>註 : 需要預載[xampp](https://www.apachefriends.org/zh_tw/download.html)
 
 <h3>html內容</h3>
 
