@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+	<meta charset="utf-8">
+	<!--<meta charset="UTF-8" http-equiv="refresh" content="5">-->
+
+	<title>Highcharts</title>
+		<!-- jQuery js -->	
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		
+		<!--include the highcharts library-->
+		<script src="http://code.highcharts.com/highcharts.js"></script>
+
+		<!-- Bootstrap css and js -->
+		<link  rel= "stylesheet"  href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
+		<link  rel= "stylesheet"  href= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" >
+		<script src= "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+
+	<script>
+	function highcharsinit(){
+		$('#container').highcharts({
+					chart: {
+				type: 'column'
+			},
+			title: {
+				text: '每日飲水量走勢圖',
+				style: {
+						fontSize: '50px',
+						fontFamily: 'DFKai-sb'
+					}
+			},
+			xAxis: {
+				type: 'category',
+				labels: {
+					rotation: -45,
+					style: {
+						fontSize: '13px',
+						fontFamily: 'Verdana, sans-serif'
+					}
+				}
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '單位(c.c.)'
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			tooltip: {
+				pointFormat: 'water volume: <b>{point.y:.1f} ml</b>'
+			},
+			series: [{
+				name: 'Population',
+				data: display_data
+				,
+				dataLabels: {
+					enabled: true,
+					rotation: 0,
+					color: '#FF8233',
+					align: 'right',
+					format: '{point.y:.1f}', // one decimal
+					y: 15, // 10 pixels down from the top
+					style: {
+						fontSize: '30px',
+						fontFamily: 'Verdana, sans-serif'
+					}
+				}
+			}]
+		});
+	}
+
+	$(function () {
+		$.ajax({									  
+			url: 'GetData.php',//連接的URL	  
+			data: "{}",//夾帶的參數
+			dataType: 'json', //資料格式 
+			success: function(data)	//傳送成功的function
+			{	
+				time =[];
+				weight = [];
+
+				display_data = []; //[time_stamp, weight - weight'], [time_stamp, weight - weight'], ...]
+				for (var i =  0; i < data.length; i++)
+				{	
+					time.push(data[i][2]);
+					weight.push(parseFloat(data[i][1]));
+					
+				}
+				for (var i =  0; i < data.length - 1; i++)
+				{	
+					temp = [];
+					if( (data[i][1] - data[i+1][1]) > 10){
+						temp.push(data[i+1][2]);
+						temp.push(parseFloat(data[i][1] - data[i+1][1]));
+						display_data.push(temp);
+					}
+					
+				}
+
+				highcharsinit();
+			} 
+
+		});
+
+		
+	});
+
+
+
+	</script>
+</head>
+
+<body>
+
+	<iframe src="https://calendar.google.com/calendar/embed?height=400&amp;wkst=1&amp;bgcolor=%23F6BF26&amp;ctz=Asia%2FTaipei&amp;src=emgudGFpd2FuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%230B8043&amp;showTitle=0" style="border-width:0" width="1920" height="400" frameborder="0" scrolling="no"></iframe>
+
+	<div class="container">
+		<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">Insert Highchart Here</div>
+		  
+
+
+
+  <p class="font-weight-bolder" id="result" ><p>
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">AddData</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+					<label for="exampleInputEmail1">humidity</label>
+					<input type="email" class="form-control" id="humidity1" aria-describedby="emailHelp" placeholder="Enter humidity">
+					</div>
+					<div class="form-group">
+					<label for="exampleInputPassword1">temperature</label>
+					<input type="email" class="form-control" id="temperature1" aria-describedby="emailHelp" placeholder="Enter temperature">
+					</div>
+				</form>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			<button type="button" class="btn btn-success" id="addData" data-dismiss="modal" onClick="window.location.reload()">Add</button>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	</div>
+
+
+</body>
+</html>
